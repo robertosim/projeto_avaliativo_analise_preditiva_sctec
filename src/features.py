@@ -1,4 +1,4 @@
-# features.py - Funções de tratamento e limpeza dos dados (Data Prep)
+# features.py - Funções de tratamento, limpeza e engenharia de features
 
 import pandas as pd
 import numpy as np
@@ -112,3 +112,123 @@ def conter_outliers(df, coluna):
     serie = df[coluna].astype("float64")
     df[coluna] = serie.clip(lower=limites["limite_inferior"], upper=limites["limite_superior"])
     return n_contidos
+
+
+# ---------------------------------------------------------------------------
+# Feature Engineering (Fase 3)
+# ---------------------------------------------------------------------------
+
+def criar_idade_imovel(df):
+    """
+    Cria a coluna 'idade_imovel' com a idade do imóvel no momento da venda.
+
+    Calculada a partir do ano de venda (extraído da coluna 'date')
+    menos o ano de construção ('yr_built').
+
+    Parameters
+    ----------
+    df : pd.DataFrame
+        DataFrame contendo as colunas 'date' e 'yr_built'.
+
+    Returns
+    -------
+    df : pd.DataFrame
+        DataFrame com a nova coluna 'idade_imovel'.
+    """
+    df["date"] = pd.to_datetime(df["date"], format="%Y%m%dT%H%M%S", errors="coerce")
+    ano_venda = df["date"].dt.year
+    df["idade_imovel"] = (ano_venda - df["yr_built"]).clip(lower=0)
+    return df
+
+
+def criar_foi_reformado(df):
+    """
+    Cria a coluna 'foi_reformado' (bool) indicando se o imóvel foi reformado.
+
+    Derivada de 'yr_renovated': True se yr_renovated > 0, False caso contrário.
+
+    Parameters
+    ----------
+    df : pd.DataFrame
+        DataFrame contendo a coluna 'yr_renovated'.
+
+    Returns
+    -------
+    df : pd.DataFrame
+        DataFrame com a nova coluna 'foi_reformado'.
+    """
+    df["foi_reformado"] = (df["yr_renovated"] > 0).astype(int)
+    return df
+
+
+def criar_comodos_totais(df):
+    """
+    Cria a coluna 'comodos_totais' = bedrooms + bathrooms.
+
+    Representa o total de cômodos, capturando melhor o porte do imóvel
+    e reduzindo multicolinearidade entre quartos e banheiros.
+
+    Parameters
+    ----------
+    df : pd.DataFrame
+        DataFrame com as colunas 'bedrooms' e 'bathrooms'.
+
+    Returns
+    -------
+    df : pd.DataFrame
+        DataFrame com a nova coluna 'comodos_totais'.
+    """
+    df["comodos_totais"] = df["bedrooms"] + df["bathrooms"]
+    return df
+
+
+def criar_razao_lote_area(df):
+    """
+    Cria a coluna 'razao_lote_area' = sqft_lot / sqft_living.
+
+    A relação entre terreno e área construída indica se o imóvel tem
+    terreno proporcionalmente grande ou pequeno, influenciando o preço.
+
+    Parameters
+    ----------
+    df : pd.DataFrame
+        DataFrame com as colunas 'sqft_lot' e 'sqft_living'.
+
+    Returns
+    -------
+    df : pd.DataFrame
+        DataFrame com a nova coluna 'razao_lote_area'.
+    """
+    df["razao_lote_area"] = df["sqft_lot"] / df["sqft_living"]
+    return df
+
+
+def criar_anos_desde_reforma(df):
+    """
+    Cria a coluna 'anos_desde_reforma'.
+
+    Calcula há quantos anos o imóvel foi reformado. Se nunca foi
+    reformado (yr_renovated == 0), retorna NaN.
+
+    Parameters
+    ----------
+    df : pd.DataFrame
+        DataFrame com as colunas 'date' (para extrair o ano) e 'yr_renovated'.
+
+    Returns
+    -------
+    df : pd.DataFrame
+        DataFrame com a nova coluna 'anos_desde_reforma'.
+    """
+    if not pd.api.types.is_datetime64_any_dtype(df["date"]):
+        df["date"] = pd.to_datetime(df["date"], format="%Y%m%dT%H%M%S", errors="coerce")
+    ano_venda = df["date"].dt.year
+    df["anos_desde_reforma"] = np.where(
+        df["yr_renovated"] > 0,
+        ano_venda - df["yr_renovated"],
+        0
+    ).clip(min=0)
+    return df
+
+
+
