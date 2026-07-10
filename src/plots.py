@@ -88,6 +88,29 @@ def plot_dispersao(df, col_x, col_y="price"):
     return correl
 
 
+def plot_boxplot(df, coluna):
+    """
+    Plota um boxplot de uma coluna para análise visual de outliers.
+
+    Parameters
+    ----------
+    df : pd.DataFrame
+        DataFrame com os dados.
+    coluna : str
+        Nome da coluna para o boxplot.
+
+    Returns
+    -------
+    fig : matplotlib.figure.Figure
+    """
+    fig, ax = plt.subplots()
+    sns.boxplot(data=df, y=coluna, ax=ax)
+    ax.set_title(f"Boxplot: {coluna}")
+    plt.tight_layout()
+    salvar_figura(f"boxplot_{coluna}.png")
+    return fig
+
+
 def plot_matriz_correlacao(df, colunas=None):
     """
     Plota a matriz de correlação de Pearson (heatmap) para as colunas numéricas.
