@@ -1,4 +1,4 @@
-# 🏠 Pipeline Preditivo de Precificação Imobiliária (King County)
+# Pipeline Preditivo de Precificação Imobiliária (King County)
 
 **Projeto Avaliativo — Módulo 1 | Desenvolvimento de IA para Análise Preditiva [T2]**
 
