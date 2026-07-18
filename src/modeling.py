@@ -109,15 +109,19 @@ def comparar_modelos(modelos, X_train, y_train, X_test, y_test):
 
         rmse_train = np.sqrt(mean_squared_error(y_train, y_pred_train))
         rmse_test = np.sqrt(mean_squared_error(y_test, y_pred_test))
+        mae_train = mean_absolute_error(y_train, y_pred_train)
+        mae_test = mean_absolute_error(y_test, y_pred_test)
         r2_train = r2_score(y_train, y_pred_train)
         r2_test = r2_score(y_test, y_pred_test)
 
         linhas.append({
             "Modelo": nome,
-            "RMSE Treino": rmse_train,
+            "MAE Teste": mae_test,
             "RMSE Teste": rmse_test,
-            "R² Treino": r2_train,
             "R² Teste": r2_test,
+            "MAE Treino": mae_train,
+            "RMSE Treino": rmse_train,
+            "R² Treino": r2_train,
             "Diferença RMSE": abs(rmse_train - rmse_test)
         })
     return pd.DataFrame(linhas).sort_values("RMSE Teste")
