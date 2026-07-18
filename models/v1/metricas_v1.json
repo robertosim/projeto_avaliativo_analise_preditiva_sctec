@@ -1,6 +1,6 @@
 {
   "versao": "v1",
-  "data_treino": "2026-07-18 18:42:27",
+  "data_treino": "2026-07-18 19:34:07",
   "modelo": "KNeighborsRegressor",
   "hiperparametros": {
     "algorithm": "auto",
@@ -13,10 +13,10 @@
     "weights": "uniform"
   },
   "metricas_teste": {
-    "MAE": 87755.45,
-    "MSE": 31048845132.73,
-    "RMSE": 176206.82,
-    "R2": 0.7946
+    "MAE": 88513.23,
+    "MSE": 31099455005.64,
+    "RMSE": 176350.38,
+    "R2": 0.7943
   },
   "variaveis_preditoras": [
     "bathrooms",
@@ -32,7 +32,6 @@
     "sqft_lot15",
     "idade_imovel",
     "foi_reformado",
-    "comodos_totais",
     "razao_lote_area",
     "anos_desde_reforma",
     "zipcode_98002",
@@ -103,7 +102,8 @@
     "zipcode_98178",
     "zipcode_98188",
     "zipcode_98198",
-    "zipcode_98199"
+    "zipcode_98199",
+    "bedrooms"
   ],
   "n_amostras_treino": 17290,
   "n_amostras_teste": 4323
